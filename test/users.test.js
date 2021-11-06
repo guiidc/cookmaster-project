@@ -191,7 +191,7 @@ describe('2 - Crie um endpoint para o login de usuários', () => {
       });
   });
 
-  it.skip('Será validado que o campo "password" é obrigatório', async () => {
+  it('Será validado que o campo "password" é obrigatório', async () => {
     await frisby
       .post(`${url}/login/`,
         {
@@ -205,7 +205,7 @@ describe('2 - Crie um endpoint para o login de usuários', () => {
       });
   });
 
-  it.skip('Será validado que não é possível fazer login com um email inválido', async () => {
+  it('Será validado que não é possível fazer login com um email inválido', async () => {
     await frisby
       .post(`${url}/login`,
         {
@@ -220,7 +220,7 @@ describe('2 - Crie um endpoint para o login de usuários', () => {
       });
   });
 
-  it.skip('Será validado que não é possível fazer login com uma senha inválida', async () => {
+  it('Será validado que não é possível fazer login com uma senha inválida', async () => {
     await frisby
       .post(`${url}/login`,
         {
@@ -235,7 +235,7 @@ describe('2 - Crie um endpoint para o login de usuários', () => {
       });
   });
 
-  it.skip('Será validado que é possível fazer login com sucesso', async () => {
+  it('Será validado que é possível fazer login com sucesso', async () => {
     await frisby
       .post(`${url}/users/`,
         {
