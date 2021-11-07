@@ -1,8 +1,9 @@
 const express = require('express');
-const BodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 const app = express();
-app.use(BodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 const router = require('../../routes');
 // Não remover esse end-point, ele é necessário para o avaliador
 app.get('/', (request, response) => {
