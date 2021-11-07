@@ -28,7 +28,7 @@ describe('6 - Crie uma query em mongo que insira uma pessoa usuária com permiss
     await connection.close();
   });
 
-  it('Será validado que o projeto tem um arquivo de seed, com um comando para inserir um usuário root e verifico se consigo fazer login', async () => {
+  it.skip('Será validado que o projeto tem um arquivo de seed, com um comando para inserir um usuário root e verifico se consigo fazer login', async () => {
     const fileSeed = fs.readFileSync('./seed.js', 'utf8');
     expect(fileSeed).toContain('db.users.insertOne({ name: \'admin\', email: \'root@email.com\', password: \'admin\', role: \'admin\' });')
     await frisby
