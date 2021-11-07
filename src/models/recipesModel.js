@@ -34,10 +34,22 @@ async function removeRecipe(recipeId) {
   return recipe;
 }
 
+async function updateRecipeImage(id) {
+  const image = `localhost:3000/src/uploads/${id}.jpeg`;
+  const recipe = await getRecipeById(id);
+  await mongoConnection.getConnection()
+  .then((db) => db.collection('recipes').updateOne(
+    { _id: ObjectId(id) }, { $set: { image } },
+    ));
+
+  return { ...recipe, image };
+}
+
 module.exports = {
   createRecipe,
   getAllRecipes,
   getRecipeById,
   updateRecipe,
   removeRecipe,
+  updateRecipeImage,
 };

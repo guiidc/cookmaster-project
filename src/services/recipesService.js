@@ -1,4 +1,3 @@
-// const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 const recipesModel = require('../models/recipesModel');
 
@@ -40,10 +39,16 @@ async function removeRecipe(userPayload, recipeId) {
   return null;
 }
 
+async function updateRecipeImage(id) {
+ const recipe = await recipesModel.updateRecipeImage(id);
+ return recipe;
+} 
+
 module.exports = {
   createRecipe,
   getAllRecipes,
   getRecipeById,
   updateRecipe,
   removeRecipe,
+  updateRecipeImage,
 };
