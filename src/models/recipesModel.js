@@ -28,9 +28,16 @@ async function updateRecipe(userId, recipeId, recipeData) {
   return { _id: recipeId, ingredients, name, preparation, userId };
 }
 
+async function removeRecipe(recipeId) {
+  const recipe = await mongoConnection.getConnection()
+  .then((db) => db.collection('recipes').deleteOne({ _id: ObjectId(recipeId) }));
+  return recipe;
+}
+
 module.exports = {
   createRecipe,
   getAllRecipes,
   getRecipeById,
   updateRecipe,
+  removeRecipe,
 };

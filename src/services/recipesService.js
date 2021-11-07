@@ -31,9 +31,19 @@ async function updateRecipe(userId, recipeId, receipeData) {
   return recipe;
 }
 
+async function removeRecipe(userPayload, recipeId) {
+  const recipe = await recipesModel.getRecipeById(recipeId);
+  if (!recipe) return null;
+  if (userPayload.userId === recipe.userId || userPayload.role === 'admin') {
+    return recipesModel.removeRecipe(recipeId);
+  }
+  return null;
+}
+
 module.exports = {
   createRecipe,
   getAllRecipes,
   getRecipeById,
   updateRecipe,
+  removeRecipe,
 };
