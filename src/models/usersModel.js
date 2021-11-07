@@ -7,7 +7,7 @@ async function createUser(userData) {
 }
 
 async function getUserByEmail(email) {
-  const user = mongoConnection.getConnection()
+  const user = await mongoConnection.getConnection()
   .then((db) => db.collection('users').findOne({ email }));
   return user;
 }

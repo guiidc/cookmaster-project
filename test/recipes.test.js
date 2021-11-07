@@ -38,7 +38,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
     await connection.close();
   });
 
-  it.skip('Será validado que não é possível cadastrar receita sem o campo "name"', async () => {
+  it('Será validado que não é possível cadastrar receita sem o campo "name"', async () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
@@ -69,7 +69,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
       });
   });
 
-  it.skip('Será validado que não é possível cadastrar receita sem o campo "preparation"', async () => {
+  it('Será validado que não é possível cadastrar receita sem o campo "preparation"', async () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
@@ -100,7 +100,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
       });
   });
 
-  it.skip('Será validado que não é possível cadastrar receita sem o campo "ingredients"', async () => {
+  it('Será validado que não é possível cadastrar receita sem o campo "ingredients"', async () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',
@@ -131,7 +131,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
       });
   });
 
-  it.skip('Será validado que não é possível cadastrar uma receita com token invalido', async () => {
+  it('Será validado que não é possível cadastrar uma receita com token invalido', async () => {
     await frisby
       .setup({
         request: {
@@ -153,7 +153,7 @@ describe('3 - Crie um endpoint para o cadastro de receitas', () => {
       });
   });
 
-  it.skip('Será validado que é possível cadastrar uma receita com sucesso', async () => {
+  it('Será validado que é possível cadastrar uma receita com sucesso', async () => {
     await frisby
       .post(`${url}/login/`, {
         email: 'erickjacquin@gmail.com',

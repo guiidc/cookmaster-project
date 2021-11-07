@@ -1,1 +1,0 @@
-const mongoConnection = require('./connection');
