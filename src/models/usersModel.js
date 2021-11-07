@@ -1,4 +1,4 @@
-const mongoConnection = require('./connection');
+const mongoConnection = require('../../configs/connection');
 
 async function createUser(userData) {
   const user = await mongoConnection.getConnection()

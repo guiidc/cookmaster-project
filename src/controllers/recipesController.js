@@ -16,11 +16,18 @@ async function createRecipe(req, res) {
 
 async function getAllRecipes(_req, res) {
   const recipes = await recipesService.getAllRecipes();
-  console.log(recipes);
   res.status(200).json(recipes);
+}
+
+async function getRecipeById(req, res) {
+  const { id } = req.params;
+  const recipe = await recipesService.getRecipeById(id);
+  if (recipe.error) return res.status(404).json(recipe.error);
+  res.status(200).json(recipe);
 }
 
 module.exports = {
   createRecipe,
   getAllRecipes,
+  getRecipeById,
 };
