@@ -13,11 +13,11 @@ router.post('/recipes', middlewares.validateToken, recipesController.createRecip
 router.delete('/recipes/:id', middlewares.validateToken, recipesController.removeRecipe);
 router.put('/recipes/:id', middlewares.validateToken, recipesController.updateRecipe);
 router.get('/images/:image', recipesController.getRecipeImage);
+router.post('/users/admin', middlewares.validateToken, userController.createAdmin);
 
 router.put(
 '/recipes/:id/image',
 middlewares.validateToken,
-middlewares.verifyAuthor,
 upload.single('image'),
 recipesController.updateRecipeImage,
 );

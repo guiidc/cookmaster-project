@@ -34,7 +34,6 @@ async function updateRecipe(req, res) {
 async function removeRecipe(req, res) {
   const { id: recipeId } = req.params;
   const recipe = await recipesService.removeRecipe(req.payload, recipeId);
-  console.log(recipeId);
   if (recipe.error) return res.status(404).json(recipe.error);
   return res.status(204).json();
 }

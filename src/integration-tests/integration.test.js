@@ -5,7 +5,6 @@ const { expect } = require('chai');
 const mongoConnection = require('../../configs/connection');
 const { getConnectionMock }= require('../../configs/connectionMock');
 const app = require('../api/app');
-const { ObjectId } = require('mongodb');
 
 chai.use(chaiHttp);
 
@@ -78,12 +77,17 @@ describe('Teste da rota de LOGIN', () => {
 });
 
 describe('Testa rota de USERS', () => {
-  const userExample = { name: 'rogerin', email: 'reogerin@rogerin.com', password: 123 };
+  const userExample1 = { name: 'rogerin', email: 'reogerin@rogerin.com', password: 123, role: 'user'};
+  const LoginUserExample1 = { email: 'reogerin@rogerin.com', password: 123};
+  const userExample2 = { name: 'minimim', email: 'minimim@minimim.com', password: 123, role: 'user'};
+  const LoginUserExample2 = { email: 'minimin@minimin.com', password: 123};
+  const adminExample = { name: 'root', email: 'root@root.com', password: 123, role: 'admin'};
+  const adminLoginExample = { email: 'root@root.com', password: 123 };
   let dbMock; 
 
   before(async () => {
     dbMock = await getConnectionMock();
-    await dbMock.collection('users').insertOne(userExample)
+    await dbMock.collection('users').insertOne(userExample1)
     sinon.stub(mongoConnection, 'getConnection').resolves(dbMock);
   });
 
@@ -112,7 +116,7 @@ describe('Testa rota de USERS', () => {
     describe('Quando o usuário já existe', () => {
       let response;
       before(async () => {
-        response = await chai.request(app).post('/users').send(userExample);
+        response = await chai.request(app).post('/users').send(userExample1);
       });
       it('Deve retornar status 409', async () => {
         expect(response).to.have.status(409);
@@ -141,6 +145,50 @@ describe('Testa rota de USERS', () => {
         expect(response.body).be.an('object');
       });
       it('Deve retornar a mensagem nome, email, role, id', () => {
+        expect(response.body.user).to.include.all.keys('name', 'email', 'role', '_id');
+      });
+    })
+    describe('Quando um usuário sem permissão tenta cadastrar um admin', () => {
+      let response;
+      let token;
+
+      before(async () => {
+        await dbMock.collection('users').drop();
+        await dbMock.collection('users').insertOne(userExample1)
+        const loggedUser = await chai.request(app).post('/login').send(LoginUserExample1);
+        token = loggedUser.body.token;
+        response = await chai.request(app).post('/users/admin').send(userExample2).set('authorization', token);
+        console.log(response.body)
+      })
+      it('Deve retornar status 403', async () => {
+        expect(response).to.have.status(403);
+      });
+      it('Deve retornar um objeto', () => {
+        expect(response.body).to.be.an('object');
+      });
+      it('Deve retornar a mensagem "Only admins can register new admins"', () => {
+        expect(response.body.message).to.eql('Only admins can register new admins');
+      });
+    })
+    describe('Quando um admin cadastra outro admin', () => {
+      let response;
+      let token;
+
+      before(async () => {
+        await dbMock.collection('users').drop();
+        await dbMock.collection('users').insertOne(adminExample)
+        const loggedUser = await chai.request(app).post('/login').send(adminLoginExample);
+        token = loggedUser.body.token;
+        response = await chai.request(app).post('/users/admin').send(userExample1).set('authorization', token);
+        console.log('Eu sou o token', token)
+      })
+      it('Deve retornar status 201', async () => {
+        expect(response).to.have.status(201);
+      });
+      it('Deve retornar um objeto', () => {
+        expect(response.body.user).to.be.an('object');
+      });
+      it('Deve retornar um objeto', () => {
         expect(response.body.user).to.include.all.keys('name', 'email', 'role', '_id');
       });
     })
@@ -312,25 +360,6 @@ describe('testa rota de RECEITAS', () => {
       });
     });
 
-    describe('Quando é passado um id inválido', () => {
-      let response;
-      let token;
-
-      before(async () => {
-        await dbMock.collection('users').drop();
-        const newUser = await dbMock.collection('users').insertOne(userExample);
-        const loggedUser = await chai.request(app).post('/login').send(userLoginExample);
-        token = loggedUser.body.token;
-        response = await chai.request(app).put(`/recipes/${123}`).set('authorization', token)
-      });
-
-      it('Deve retornar status 404', () => {
-        expect(response).to.have.status(404);
-      });
-      it('Deve retornar a mensagem "recipe not found"', () => {
-        expect(response.body.message).to.eql('recipe not found');
-      });
-    })
     describe('Quando uma receita é atualizada com sucesso', () => {
       let response;
       let recipeId;
@@ -413,6 +442,64 @@ describe('testa rota de RECEITAS', () => {
       });
       it('A lista de receitas nao deve conter a receita removida', async () => {
         expect(recipesList.body).to.be.empty;
+      });
+    });
+    describe('Quando um usuário comum que não é proprietário tenta remove-la', () => {
+      let response;
+      let token;
+      let recipesList;
+      let recipeId;
+      before(async () => {
+        await dbMock.collection('users').drop();
+        await dbMock.collection('recipes').drop();
+        await dbMock.collection('users').insertOne(userExample);
+        const loggedUser = await chai.request(app).post('/login').send(userLoginExample);
+        token = loggedUser.body.token;
+        const newRecipe = await dbMock.collection('recipes').insertOne(userExample);
+        recipeId = newRecipe.insertedId;
+        response = await chai.request(app).delete(`/recipes/${recipeId}`).set('authorization', token);
+        recipesList = await chai.request(app).get('/recipes');
+      });
+      it('Deve retornar status 404', async () => {
+        expect(response).to.have.status(204);
+      });
+      it('A receita não deve ser removida da lista', async () => {
+        expect(recipesList.body).to.not.be.empty;
+      });
+    });
+    describe('Quando um admin que não é proprietário tenta remover a receita', () => {
+      let response;
+      let token;
+      let recipesList;
+      let recipeId;
+      before(async () => {
+        await dbMock.collection('users').drop();
+        await dbMock.collection('recipes').drop();
+        await dbMock.collection('users').insertOne({...userExample, role: 'admin'});
+        const loggedUser = await chai.request(app).post('/login').send(userLoginExample);
+        token = loggedUser.body.token;
+        const newRecipe = await dbMock.collection('recipes').insertOne(userExample);
+        recipeId = newRecipe.insertedId;
+        response = await chai.request(app).delete(`/recipes/${recipeId}`).set('authorization', token);
+        recipesList = await chai.request(app).get('/recipes');
+      });
+      it('Deve retornar status 404', async () => {
+        expect(response).to.have.status(204);
+      });
+      it('A receita não deve ser removida da lista', async () => {
+        expect(recipesList.body).to.be.empty;
+      });
+    });
+    describe('Quando atualiza a url de uma imagem', () => {
+      let response;
+      before(async () => {
+        await dbMock.collection('recipes').drop();
+        const newRecipe = await dbMock.collection('recipes').insertOne(recipeExample);
+        const recipeId = newRecipe.insertedId;
+        response = await chai.request(app).put(`/recipes/${recipeId}/image`).set('authorization', token);
+      });
+      it('Deve retornar status 200', async () => {
+        expect(response).to.have.status(200);
       });
     });
   })

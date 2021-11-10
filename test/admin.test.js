@@ -28,7 +28,7 @@ describe('6 - Crie uma query em mongo que insira uma pessoa usuária com permiss
     await connection.close();
   });
 
-  it.skip('Será validado que o projeto tem um arquivo de seed, com um comando para inserir um usuário root e verifico se consigo fazer login', async () => {
+  it('Será validado que o projeto tem um arquivo de seed, com um comando para inserir um usuário root e verifico se consigo fazer login', async () => {
     const fileSeed = fs.readFileSync('./seed.js', 'utf8');
     expect(fileSeed).toContain('db.users.insertOne({ name: \'admin\', email: \'root@email.com\', password: \'admin\', role: \'admin\' });')
     await frisby
@@ -71,7 +71,7 @@ describe('12 - Crie um endpoint para cadastro de pessoas administradoras', () =>
     await connection.close();
   });
 
-  it.skip('Será validado que não é possível cadastrar um usuário admin, sem estar autenticado como um usuário admin', async () => {
+  it('Será validado que não é possível cadastrar um usuário admin, sem estar autenticado como um usuário admin', async () => {
     let result;
 
     await frisby
@@ -107,7 +107,7 @@ describe('12 - Crie um endpoint para cadastro de pessoas administradoras', () =>
       });
   });
 
-  it.skip('Será validado que é possível cadastrar um usuário admin', async () => {
+  it('Será validado que é possível cadastrar um usuário admin', async () => {
     let result;
 
     await frisby

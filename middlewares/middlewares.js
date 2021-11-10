@@ -13,8 +13,4 @@ function validateToken(req, res, next) {
   next();
 }
 
-function verifyAuthor(req, res, next) {
-  next();
-}
-
-module.exports = { validateToken, verifyAuthor };
+module.exports = { validateToken };

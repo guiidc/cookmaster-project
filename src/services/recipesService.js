@@ -35,7 +35,8 @@ async function removeRecipe(userPayload, recipeId) {
   const { _id: userId, role } = userPayload;
   if (!recipe) return { error: errors.recipeNotFound };
   if (userId === recipe.userId || role === 'admin') {
-    return recipesModel.removeRecipe(recipeId);
+    const result = await recipesModel.removeRecipe(recipeId);
+    return result;
   }
   return recipe;
 }
