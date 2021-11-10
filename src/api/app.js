@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use('/images', express.static(path.resolve(__dirname, '..', 'uploads')));
+app.use('/images', express.static(path.join(__dirname, '..', 'uploads')));
 const router = require('../../routes');
 // Não remover esse end-point, ele é necessário para o avaliador
 app.get('/', (request, response) => {

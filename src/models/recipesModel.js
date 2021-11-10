@@ -29,9 +29,11 @@ async function updateRecipe(userId, recipeId, recipeData) {
 }
 
 async function removeRecipe(recipeId) {
-  const recipe = await mongoConnection.getConnection()
+  const recipe = await getRecipeById(ObjectId(recipeId));
+  if (!recipe) return null;
+  const removedRecipe = await mongoConnection.getConnection()
   .then((db) => db.collection('recipes').deleteOne({ _id: ObjectId(recipeId) }));
-  return recipe;
+  return removedRecipe;
 }
 
 async function updateRecipeImage(id) {

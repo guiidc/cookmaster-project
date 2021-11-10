@@ -33,7 +33,9 @@ async function updateRecipe(req, res) {
 
 async function removeRecipe(req, res) {
   const { id: recipeId } = req.params;
-  await recipesService.removeRecipe(req.payload, recipeId);
+  const recipe = await recipesService.removeRecipe(req.payload, recipeId);
+  console.log(recipeId);
+  if (recipe.error) return res.status(404).json(recipe.error);
   return res.status(204).json();
 }
 
@@ -45,7 +47,6 @@ async function updateRecipeImage(req, res) {
 
 async function getRecipeImage(req, res) {
   const { image } = req.params;
-  console.log(image)
   res.status(200).sendFile(path.resolve(__dirname, '..', 'uploads', `${image}`));
 }
 

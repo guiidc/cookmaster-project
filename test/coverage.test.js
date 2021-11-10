@@ -38,7 +38,7 @@ describe
   (
     '%p - Crie testes de integração que cubram no mínimo %p porcento dos arquivos em src com um mínimo de %p linhas cobertas', 
     (_testId, percentage, coveredLines) => {
-      it.skip(
+      it(
         'Será validado que o teste cobre o valor esperado',
         async () =>{
           expect(testResults.lines.skipped).toStrictEqual(0);

@@ -25,18 +25,19 @@ async function getRecipeById(id) {
 }
 
 async function updateRecipe(userId, recipeId, receipeData) {
-  if (!ObjectId.isValid(recipeId)) return { error: errors.recipeNotFound };
   const recipe = await recipesModel.updateRecipe(userId, recipeId, receipeData);
   return recipe;
 }
 
 async function removeRecipe(userPayload, recipeId) {
+  if (!ObjectId.isValid(recipeId)) return { error: errors.recipeNotFound };
   const recipe = await recipesModel.getRecipeById(recipeId);
-  if (!recipe) return null;
-  if (userPayload.userId === recipe.userId || userPayload.role === 'admin') {
+  const { _id: userId, role } = userPayload;
+  if (!recipe) return { error: errors.recipeNotFound };
+  if (userId === recipe.userId || role === 'admin') {
     return recipesModel.removeRecipe(recipeId);
   }
-  return null;
+  return recipe;
 }
 
 async function updateRecipeImage(id) {
