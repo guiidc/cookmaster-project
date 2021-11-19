@@ -158,7 +158,6 @@ describe('Testa rota de USERS', () => {
         const loggedUser = await chai.request(app).post('/login').send(LoginUserExample1);
         token = loggedUser.body.token;
         response = await chai.request(app).post('/users/admin').send(userExample2).set('authorization', token);
-        console.log(response.body)
       })
       it('Deve retornar status 403', async () => {
         expect(response).to.have.status(403);
@@ -180,7 +179,6 @@ describe('Testa rota de USERS', () => {
         const loggedUser = await chai.request(app).post('/login').send(adminLoginExample);
         token = loggedUser.body.token;
         response = await chai.request(app).post('/users/admin').send(userExample1).set('authorization', token);
-        console.log('Eu sou o token', token)
       })
       it('Deve retornar status 201', async () => {
         expect(response).to.have.status(201);
